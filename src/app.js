@@ -13,8 +13,8 @@ app.use(morgan(morganOption));
 app.use(cors());
 app.use(helmet());
 
-app.get("/", (req, res) => {
-  res.send("Hello, world!");
+app.get("/api/*", (req, res) => {
+  res.send({ ok: true });
 });
 
 app.use(function errorHandler(error, req, res, next) {
