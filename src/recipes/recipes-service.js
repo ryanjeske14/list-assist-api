@@ -2,7 +2,7 @@ const RecipesService = {
   getAllRecipes(db) {
     return db.raw(`select json_agg(rec)
         from (
-            select r.id, r.name, r.description, r.instructions,
+            select r.id, r.name, r.description, r.instructions, r.owner_id,
             (select json_agg(recing)
             from (
                 select ingredient_id as id, i.name, quantity, u.name as unit, special_instructions, recipe_id from recipes_ingredients 
