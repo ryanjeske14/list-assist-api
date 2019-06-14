@@ -4,6 +4,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const helmet = require("helmet");
 const { NODE_ENV } = require("./config");
+const recipesRouter = require("./recipes/recipes-router");
 
 const app = express();
 
@@ -13,9 +14,7 @@ app.use(morgan(morganOption));
 app.use(cors());
 app.use(helmet());
 
-app.get("/api/*", (req, res) => {
-  res.send({ ok: true });
-});
+app.use("/api/recipes", recipesRouter);
 
 app.use(function errorHandler(error, req, res, next) {
   let response;
