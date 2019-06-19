@@ -16,18 +16,8 @@ recipesRouter.route("/").get((req, res, next) => {
     .catch(next);
 });
 
-recipesRouter.route("/test").get((req, res, next) => {
-  RecipesService.getById(req.app.get("db"), 2)
-    .then(recipe => {
-      if (recipe.rows[0] != null) {
-        res.json(recipe.rows[0]);
-      } else res.json({});
-    })
-    .catch(next);
-});
-
-recipesRouter.route("/").post(jsonBodyParser, (req, res, next) => {
-  const recipe = req.body;
+recipesRouter.route("/").post(requireAuth, jsonBodyParser, (req, res, next) => {
+  const { recipe } = req.body;
   const ingredients = recipe.ingredients.map(ingredient => {
     return { name: ingredient.name };
   });
@@ -40,7 +30,7 @@ recipesRouter.route("/").post(jsonBodyParser, (req, res, next) => {
     return {
       name: ingredient.name,
       quantity: ingredient.quantity,
-      unit_id: 3,
+      unit_id: ingredient.unit_id,
       special_instructions: ingredient.special_instructions
     };
   });
@@ -51,8 +41,7 @@ recipesRouter.route("/").post(jsonBodyParser, (req, res, next) => {
         error: `Missing '${key}' in request body`
       });
 
-  //newRecipe.owner_id = req.user.id;
-  newRecipe.owner_id = 1;
+  newRecipe.owner_id = req.user.id;
 
   RecipesService.insertRecipe(
     req.app.get("db"),

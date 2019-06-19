@@ -45,11 +45,12 @@ VALUES
     ('lbs'),
     ('packages'),
     ('loaves'),
-    ('slices');
+    ('slices'),
+    ('cloves');
 
 INSERT INTO users (user_name, password)
 VALUES
-    ('dummy', 'password');
+    ('ryanjeske', '$2a$12$Rj705fl1vn.g5YnpeHhyeuv/3f/AuX/WCUsdgJo0x14lDIRvMd6iO');
 
 INSERT INTO recipes (name, description, instructions, owner_id)
 VALUES
