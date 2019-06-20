@@ -7,7 +7,8 @@ const recipesRouter = express.Router();
 const jsonBodyParser = express.json();
 
 recipesRouter.route("/").get((req, res, next) => {
-  RecipesService.getAllRecipes(req.app.get("db"))
+  const userId = req.headers.userid;
+  RecipesService.getRecipes(req.app.get("db"), userId)
     .then(recipes => {
       if (recipes.rows[0].json_agg != null) {
         res.json(recipes.rows[0].json_agg);

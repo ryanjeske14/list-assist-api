@@ -1,5 +1,5 @@
 const RecipesService = {
-  getAllRecipes(db) {
+  getRecipes(db, userId) {
     return db.raw(`select json_agg(rec)
         from (
             select r.id, r.name, r.description, r.instructions, r.owner_id,
@@ -11,7 +11,7 @@ const RecipesService = {
                 where recipe_id = r.id
                 ) recing
             ) as ingredients
-            from recipes as r) as rec
+            from recipes as r where r.owner_id = ${userId} or r.owner_id = 1) as rec
         `);
   },
 
