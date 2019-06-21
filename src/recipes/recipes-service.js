@@ -1,3 +1,5 @@
+const xss = require("xss");
+
 const RecipesService = {
   getRecipes(db, userId) {
     return db.raw(`select json_agg(rec)
@@ -63,6 +65,26 @@ const RecipesService = {
       .then(() => {
         return RecipesService.getById(db, newRecipeId);
       });
+  },
+
+  serializeRecipe(recipe) {
+    return {
+      id: recipe.id,
+      name: xss(recipe.name),
+      description: xss(recipe.description),
+      instructions: xss(recipe.instructions),
+      owner_id: recipe.owner_id,
+      ingredients: recipe.ingredients.map(ingredient => {
+        return {
+          id: ingredient.id,
+          name: xss(ingredient.name),
+          quantity: ingredient.quantity,
+          unit: ingredient.unit,
+          special_instructions: xss(ingredient.special_instructions),
+          recipe_id: ingredient.recipe_id
+        };
+      })
+    };
   }
 };
 
