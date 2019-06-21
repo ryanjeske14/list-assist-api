@@ -64,4 +64,48 @@ recipesRouter.route("/").post(requireAuth, jsonBodyParser, (req, res, next) => {
     .catch(next);
 });
 
+recipesRouter
+  .route("/:recipe_id")
+  .all(requireAuth)
+  .all(checkRecipeExists)
+  .get((req, res, next) => {
+    res.json(RecipesService.serializeRecipe(res.recipe));
+  })
+  .delete(requireAuth, (req, res, next) => {
+    const recipe = res.recipe;
+
+    if (req.user.id != recipe.owner_id) {
+      return res.status(401).json({
+        error: {
+          message: "Unauthorized request: You may only delete your own recipes!"
+        }
+      });
+    }
+
+    RecipesService.deleteRecipe(req.app.get("db"), req.params.recipe_id)
+      .then(() => {
+        res.status(204).end();
+      })
+      .catch(next);
+  });
+
+async function checkRecipeExists(req, res, next) {
+  try {
+    const recipe = await RecipesService.getById(
+      req.app.get("db"),
+      req.params.recipe_id
+    );
+
+    if (!recipe.rows[0])
+      return res.status(404).json({
+        error: `Recipe doesn't exist`
+      });
+
+    res.recipe = recipe.rows[0];
+    next();
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = recipesRouter;

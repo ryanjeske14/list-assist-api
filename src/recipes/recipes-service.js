@@ -18,7 +18,7 @@ const RecipesService = {
   },
 
   getById(db, id) {
-    return db.raw(`select r.id, r.name, r.description, r.instructions,
+    return db.raw(`select r.id, r.name, r.description, r.instructions, r.owner_id,
     (select json_agg(recing)
     from (
       select ingredient_id as id, i.name, quantity, u.name as unit, special_instructions, recipe_id from recipes_ingredients 
@@ -65,6 +65,12 @@ const RecipesService = {
       .then(() => {
         return RecipesService.getById(db, newRecipeId);
       });
+  },
+
+  deleteRecipe(db, id) {
+    return db("recipes")
+      .where({ id })
+      .delete();
   },
 
   serializeRecipe(recipe) {
