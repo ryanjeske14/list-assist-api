@@ -29,7 +29,7 @@ recipesRouter.route("/").post(requireAuth, jsonBodyParser, (req, res, next) => {
   };
   const recipeIngredients = recipe.ingredients.map(ingredient => {
     return {
-      quantity: ingredient.quantity,
+      quantity: convertFraction(ingredient.quantity),
       unit_id: ingredient.unit_id,
       special_instructions: ingredient.special_instructions
     };
@@ -106,5 +106,14 @@ async function checkRecipeExists(req, res, next) {
     next(error);
   }
 }
+
+const convertFraction = num => {
+  if (num.includes("/")) {
+    let splitNum = num.split("/").map(num => parseInt(num));
+    return splitNum[0] / splitNum[1];
+  } else {
+    return num;
+  }
+};
 
 module.exports = recipesRouter;
