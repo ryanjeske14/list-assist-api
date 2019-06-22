@@ -29,7 +29,6 @@ recipesRouter.route("/").post(requireAuth, jsonBodyParser, (req, res, next) => {
   };
   const recipeIngredients = recipe.ingredients.map(ingredient => {
     return {
-      name: ingredient.name,
       quantity: ingredient.quantity,
       unit_id: ingredient.unit_id,
       special_instructions: ingredient.special_instructions

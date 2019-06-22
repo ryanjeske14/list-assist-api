@@ -40,13 +40,8 @@ const RecipesService = {
           .insert(ingredients)
           .returning("*")
           .then(ingredients => {
-            for (let recipeIngredient of recipeIngredients) {
-              for (let ingredient of ingredients) {
-                if (recipeIngredient.name === ingredient.name) {
-                  recipeIngredient.ingredient_id = ingredient.id;
-                  delete recipeIngredient.name;
-                }
-              }
+            for (let i = 0; i < ingredients.length; i++) {
+              recipeIngredients[i].ingredient_id = ingredients[i].id;
             }
           });
         await trx
