@@ -65,7 +65,7 @@ recipesRouter.route("/").post(requireAuth, jsonBodyParser, (req, res, next) => {
 
 recipesRouter
   .route("/:recipe_id")
-  .all(requireAuth)
+  // .all(requireAuth)
   .all(checkRecipeExists)
   .get((req, res, next) => {
     res.json(RecipesService.serializeRecipe(res.recipe));
@@ -83,6 +83,44 @@ recipesRouter
 
     RecipesService.deleteRecipe(req.app.get("db"), req.params.recipe_id)
       .then(() => {
+        res.status(204).end();
+      })
+      .catch(next);
+  })
+  .patch(requireAuth, jsonBodyParser, (req, res, next) => {
+    // get recipe object from request
+    // recipe object will need to include recipe id and ingredient id(s)
+    const { recipe } = req.body;
+    // extract ingredient data (id and name of each ingredient) and assign to array
+    const ingredients = recipe.ingredients.map(ingredient => {
+      return { id: ingredient.id, name: ingredient.name };
+    });
+    // extract recipe data (id, name, desc, and instr) and assign object
+    const updatedRecipe = {
+      id: recipe.id,
+      name: recipe.name,
+      description: recipe.description,
+      instructions: recipe.instructions
+    };
+    // extract recipeIngredients data (recipe_id, ingredient_id, quantity, unit_id, and special instructions) and assign to array
+    const recipeIngredients = recipe.ingredients.map(ingredient => {
+      return {
+        recipe_id: ingredient.recipe_id,
+        ingredient_id: recipe.ingredient_id,
+        quantity: convertFraction(ingredient.quantity),
+        unit_id: ingredient.unit_id,
+        special_instructions: ingredient.special_instructions
+      };
+    });
+
+    for (const [key, value] of Object.entries(recipe))
+      if (value == null)
+        return res.status(400).json({
+          error: `Missing '${key}' in request body`
+        });
+
+    RecipesService.updateRecipe(req.app.get("db"), ingredients, updatedRecipe)
+      .then(numRowsAffected => {
         res.status(204).end();
       })
       .catch(next);

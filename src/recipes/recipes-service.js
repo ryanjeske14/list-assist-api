@@ -21,7 +21,7 @@ const RecipesService = {
     return db.raw(`select r.id, r.name, r.description, r.instructions, r.owner_id,
     (select json_agg(recing)
     from (
-      select ingredient_id as id, i.name, quantity, u.name as unit, special_instructions, recipe_id from recipes_ingredients 
+      select ingredient_id as id, i.name, quantity, u.name as unit, u.id as unit_id, special_instructions, recipe_id from recipes_ingredients 
       join ingredients i on ingredient_id = i.id
       join units u on unit_id = u.id
       where recipe_id = r.id
@@ -68,6 +68,30 @@ const RecipesService = {
       .delete();
   },
 
+  updateRecipe(db, ingredients, recipe) {
+    console.log(ingredients);
+    return db.transaction(async trx => {
+      try {
+        await ingredients.forEach(ingredient => {
+          db("ingredients")
+            .where("id", ingredient.id)
+            .update("name", ingredient.name)
+            .then(trx.commit)
+            .catch(trx.rollback);
+        });
+        await db("recipes")
+          .where("id", recipe.id)
+          .update({
+            name: recipe.name,
+            description: recipe.description,
+            instructions: recipe.instructions
+          });
+      } catch {
+        trx.rollback;
+      }
+    });
+  },
+
   serializeRecipe(recipe) {
     return {
       id: recipe.id,
@@ -81,6 +105,7 @@ const RecipesService = {
           name: xss(ingredient.name),
           quantity: ingredient.quantity,
           unit: ingredient.unit,
+          unit_id: ingredient.unit_id,
           special_instructions: xss(ingredient.special_instructions),
           recipe_id: ingredient.recipe_id
         };
