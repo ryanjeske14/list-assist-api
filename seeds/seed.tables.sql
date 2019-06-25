@@ -63,9 +63,9 @@ VALUES
         - Add beans, stir, and let cook another 15 minutes',
     1),
     ('Buffalo Chicken Dip',
-    'Crockpot Buffalo Chicken Dip- Juicy and delicious buffalo chicken cooked to perfection with the help of your crockpot.',
-    '- Place chicken breasts in the bottom of your crockpot. \n 
-    - Sprinkle with ranch seasoning then pour buffalo wing sauce over the top. \n 
+    'Juicy and delicious buffalo chicken cooked to perfection with the help of your crockpot.',
+    '- Place chicken breasts in the bottom of your crockpot.
+    - Sprinkle with ranch seasoning then pour buffalo wing sauce over the top.
     - Cook chicken on low for 6-8 hours or on high for 4-5 hours.',
     1);
 
