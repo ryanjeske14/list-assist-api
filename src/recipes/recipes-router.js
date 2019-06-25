@@ -90,7 +90,16 @@ recipesRouter
   .patch(requireAuth, jsonBodyParser, (req, res, next) => {
     // get recipe object from request
     // recipe object will need to include recipe id and ingredient id(s)
-    const { recipe } = req.body;
+    const { recipe, ingredientsToDelete } = req.body;
+
+    // if (req.user.id != recipe.owner_id) {
+    //   return res.status(401).json({
+    //     error: {
+    //       message: "Unauthorized request: You may only  your own recipes!"
+    //     }
+    //   });
+    // }
+
     // extract ingredient data (id and name of each ingredient) and assign to array
     const ingredients = recipe.ingredients.map(ingredient => {
       return { id: ingredient.id, name: ingredient.name };
@@ -105,8 +114,7 @@ recipesRouter
     // extract recipeIngredients data (recipe_id, ingredient_id, quantity, unit_id, and special instructions) and assign to array
     const recipeIngredients = recipe.ingredients.map(ingredient => {
       return {
-        recipe_id: ingredient.recipe_id,
-        ingredient_id: recipe.ingredient_id,
+        recipe_id: recipe.id,
         quantity: convertFraction(ingredient.quantity),
         unit_id: ingredient.unit_id,
         special_instructions: ingredient.special_instructions
@@ -119,7 +127,13 @@ recipesRouter
           error: `Missing '${key}' in request body`
         });
 
-    RecipesService.updateRecipe(req.app.get("db"), ingredients, updatedRecipe)
+    RecipesService.updateRecipe(
+      req.app.get("db"),
+      ingredients,
+      updatedRecipe,
+      recipeIngredients,
+      ingredientsToDelete
+    )
       .then(numRowsAffected => {
         res.status(204).end();
       })

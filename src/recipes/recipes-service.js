@@ -68,17 +68,36 @@ const RecipesService = {
       .delete();
   },
 
-  updateRecipe(db, ingredients, recipe) {
-    console.log(ingredients);
+  updateRecipe(
+    db,
+    ingredients,
+    recipe,
+    recipeIngredients,
+    ingredientsToDelete
+  ) {
     return db.transaction(async trx => {
       try {
-        await ingredients.forEach(ingredient => {
-          db("ingredients")
-            .where("id", ingredient.id)
-            .update("name", ingredient.name)
-            .then(trx.commit)
-            .catch(trx.rollback);
-        });
+        await trx("ingredients")
+          .whereIn(
+            "id",
+            ingredientsToDelete
+              .filter(ingredient => ingredient.id)
+              .map(ingredient => ingredient.id)
+          )
+          .delete();
+        await trx
+          .into("ingredients")
+          .insert(
+            ingredients.map(ingredient => {
+              return { name: ingredient.name };
+            })
+          )
+          .returning("*")
+          .then(ingredients => {
+            for (let i = 0; i < ingredients.length; i++) {
+              recipeIngredients[i].ingredient_id = ingredients[i].id;
+            }
+          });
         await db("recipes")
           .where("id", recipe.id)
           .update({
@@ -86,7 +105,10 @@ const RecipesService = {
             description: recipe.description,
             instructions: recipe.instructions
           });
+        await trx.into("recipes_ingredients").insert(recipeIngredients);
+        trx.commit;
       } catch {
+        console.log("shit");
         trx.rollback;
       }
     });
