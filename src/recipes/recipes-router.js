@@ -65,7 +65,6 @@ recipesRouter.route("/").post(requireAuth, jsonBodyParser, (req, res, next) => {
 
 recipesRouter
   .route("/:recipe_id")
-  // .all(requireAuth)
   .all(checkRecipeExists)
   .get((req, res, next) => {
     res.json(RecipesService.serializeRecipe(res.recipe));
@@ -92,13 +91,13 @@ recipesRouter
     // recipe object will need to include recipe id and ingredient id(s)
     const { recipe, ingredientsToDelete } = req.body;
 
-    // if (req.user.id != recipe.owner_id) {
-    //   return res.status(401).json({
-    //     error: {
-    //       message: "Unauthorized request: You may only  your own recipes!"
-    //     }
-    //   });
-    // }
+    if (req.user.id != recipe.owner_id) {
+      return res.status(401).json({
+        error: {
+          message: "Unauthorized request: You may only edit your own recipes!"
+        }
+      });
+    }
 
     // extract ingredient data (id and name of each ingredient) and assign to array
     const ingredients = recipe.ingredients.map(ingredient => {
