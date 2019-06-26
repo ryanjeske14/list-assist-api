@@ -37,7 +37,7 @@ function makeRecipesArray(users) {
       description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
       instructions:
         "Natus consequuntur deserunt commodi, nobis qui inventore corrupti iusto aliquid debitis unde non.Adipisci, pariatur.Molestiae, libero esse hic adipisci autem neque",
-      owner_id: users[1].id
+      owner_id: users[0].id
     },
     {
       id: 3,
@@ -45,7 +45,7 @@ function makeRecipesArray(users) {
       description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
       instructions:
         "Natus consequuntur deserunt commodi, nobis qui inventore corrupti iusto aliquid debitis unde non.Adipisci, pariatur.Molestiae, libero esse hic adipisci autem neque",
-      owner_id: users[2].id
+      owner_id: users[0].id
     }
   ];
 }
@@ -230,6 +230,7 @@ function makeExpectedRecipe(
         name: ingredients.find(ing => ing.id === ingredient.ingredient_id).name,
         quantity: ingredient.quantity,
         unit: units.find(unit => unit.id === ingredient.unit_id).name,
+        unit_id: ingredient.unit_id,
         special_instructions: ingredient.special_instructions,
         recipe_id: ingredient.recipe_id
       };

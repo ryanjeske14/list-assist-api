@@ -7,7 +7,7 @@ const RecipesService = {
             select r.id, r.name, r.description, r.instructions, r.owner_id,
             (select json_agg(recing)
             from (
-                select ingredient_id as id, i.name, quantity, u.name as unit, special_instructions, recipe_id from recipes_ingredients 
+                select ingredient_id as id, i.name, quantity, u.name as unit, u.id as unit_id, special_instructions, recipe_id from recipes_ingredients 
                 join ingredients i on ingredient_id = i.id
                 join units u on unit_id = u.id
                 where recipe_id = r.id
