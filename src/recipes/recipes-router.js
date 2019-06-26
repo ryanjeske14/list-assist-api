@@ -80,7 +80,15 @@ recipesRouter
       });
     }
 
-    RecipesService.deleteRecipe(req.app.get("db"), req.params.recipe_id)
+    const ingredientIds = recipe.ingredients.map(ingredient => {
+      return ingredient.id;
+    });
+
+    RecipesService.deleteRecipe(
+      req.app.get("db"),
+      req.params.recipe_id,
+      ingredientIds
+    )
       .then(() => {
         res.status(204).end();
       })

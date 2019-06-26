@@ -62,10 +62,20 @@ const RecipesService = {
       });
   },
 
-  deleteRecipe(db, id) {
-    return db("recipes")
-      .where({ id })
-      .delete();
+  deleteRecipe(db, id, ingredientIds) {
+    return db.transaction(async trx => {
+      try {
+        await trx("recipes")
+          .where({ id })
+          .delete();
+        await trx("ingredients")
+          .whereIn("id", ingredientIds)
+          .delete();
+        trx.commit;
+      } catch {
+        trx.rollback;
+      }
+    });
   },
 
   updateRecipe(
@@ -108,7 +118,6 @@ const RecipesService = {
         await trx.into("recipes_ingredients").insert(recipeIngredients);
         trx.commit;
       } catch {
-        console.log("shit");
         trx.rollback;
       }
     });
