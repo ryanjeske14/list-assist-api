@@ -69,7 +69,7 @@ recipesRouter
   .get((req, res, next) => {
     res.json(RecipesService.serializeRecipe(res.recipe));
   })
-  .delete(requireAuth, (req, res, next) => {
+  .delete(requireAuth, jsonBodyParser, (req, res, next) => {
     const recipe = res.recipe;
 
     if (req.user.id != recipe.owner_id) {
