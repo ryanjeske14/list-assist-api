@@ -14,6 +14,12 @@ usersRouter.post("/", jsonBodyParser, (req, res, next) => {
         error: `Missing '${field}' in request body`
       });
 
+  if (user_name.includes(" ")) {
+    return res.status(400).json({
+      error: "User name cannot contain any spaces"
+    });
+  }
+
   const passwordError = UsersService.validatePassword(password);
 
   if (passwordError) return res.status(400).json({ error: passwordError });
@@ -21,7 +27,7 @@ usersRouter.post("/", jsonBodyParser, (req, res, next) => {
   UsersService.hasUserWithUserName(req.app.get("db"), user_name)
     .then(hasUserWithUserName => {
       if (hasUserWithUserName)
-        return res.status(400).json({ error: `Username already taken` });
+        return res.status(400).json({ error: `User name already taken` });
 
       return UsersService.hashPassword(password).then(hashedPassword => {
         const newUser = {
