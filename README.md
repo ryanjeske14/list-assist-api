@@ -4,28 +4,62 @@ A full stack web app that automates grocery list preparation by providing users 
 
 ## Demo:
 
-- [Live Demo](https://ryanjeske-list-assist.now.sh/)
+- [List Assist Live App](https://ryanjeske-list-assist.now.sh/)
 
-## API Structure and Endpoints:
+## List Assist API Endpoints:
 
-### Structure: 
-
-### Endpoints: 
-
-#### Method: getRecipes (public)
-##### Endpoint URL:
+### getRecipes (public)
+#### Endpoint URL:
 https://obscure-island-22700.herokuapp.com/api/recipes
-##### Description:
+#### HTTP Request Method:
+GET
+#### Description:
 Responds with all default and user-added recipes. Note that in order to get user-added recipes, a valid auth token must be provided using the Authorization header (e.g., 'Bearer YOUR-AUTH-TOKEN'). Users are only able to view their own recipes, and cannot see recipes added by other users. 
 
+### getById (public)
+#### Endpoint URL:
+https://obscure-island-22700.herokuapp.com/api/recipes/:recipe_id
+#### Example URL:
+https://obscure-island-22700.herokuapp.com/api/recipes/2
+#### HTTP Request Method:
+GET
+#### Description:
+Responds with data for recipe specified by /:recipe_id in Endpoint URL. 
+
+### insertRecipe (protected)
+#### Endpoint URL:
+https://obscure-island-22700.herokuapp.com/api/recipes
+#### HTTP Request Method:
+POST
+#### Description:
+Used to create a new recipe. A valid auth token must be provided using the Authorization header (e.g., 'Bearer YOUR-AUTH-TOKEN'). 
+
+### deleteRecipe (protected)
+#### Endpoint URL:
+https://obscure-island-22700.herokuapp.com/api/recipes/:recipe_id
+#### Example URL:
+https://obscure-island-22700.herokuapp.com/api/recipes/2
+#### HTTP Request Method:
+DELETE
+#### Description:
+Deletes recipe specified by /:recipe_id in Endpoint URL. A valid auth token must be provided using the Authorization header (e.g., 'Bearer YOUR-AUTH-TOKEN'). Users are only able to delete their own recipes, and cannot delete recipes added by other users. 
+
+#### updateRecipe (protected)
+##### Endpoint URL:
+https://obscure-island-22700.herokuapp.com/api/recipes/:recipe_id
+##### Example URL:
+https://obscure-island-22700.herokuapp.com/api/recipes/2
+##### HTTP Request Method:
+PATCH
+##### Description:
+Modifies recipe and associated ingredients specified by /:recipe_id in Endpoint URL. A valid auth token must be provided using the Authorization header (e.g., 'Bearer YOUR-AUTH-TOKEN'). Users are only able to edit their own recipes, and cannot edit recipes added by other users. 
 
 ## Built With
 
-### Server-Side
 * Node.js
 * Express
 * PostgreSQL
 
-### Client-Side Repo:
+## Client Repo:
 
 - [List Assist](https://github.com/ryanjeske14/list-assist)
