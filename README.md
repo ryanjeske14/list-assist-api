@@ -1,26 +1,31 @@
-# Express Boilerplate!
+# LIST ASSIST
 
-This is a boilerplate project used for starting new projects!
+A full stack web app that automates grocery list preparation by providing users with consolidated, system-generated grocery lists based on their selection from both default and custom recipes.
 
-## Set up
+## Demo:
 
-Complete the following steps to start a new project (NEW-PROJECT-NAME):
+- [Live Demo](https://ryanjeske-list-assist.now.sh/)
 
-1. Clone this repository to your local machine `git clone BOILERPLATE-URL NEW-PROJECTS-NAME`
-2. `cd` into the cloned repository
-3. Make a fresh start of the git history for this project with `rm -rf .git && git init`
-4. Install the node dependencies `npm install`
-5. Move the example Environment file to `.env` that will be ignored by git and read by the express server `mv example.env .env`
-6. Edit the contents of the `package.json` to use NEW-PROJECT-NAME instead of `"name": "express-boilerplate",`
+## API Structure and Endpoints:
 
-## Scripts
+### Structure: 
 
-Start the application `npm start`
+### Endpoints: 
 
-Start nodemon for the application `npm run dev`
+#### Method: getRecipes (public)
+##### Endpoint URL:
+https://obscure-island-22700.herokuapp.com/api/recipes
+##### Description:
+Responds with all default and user-added recipes. Note that in order to get user-added recipes, a valid auth token must be provided using the Authorization header (e.g., 'Bearer YOUR-AUTH-TOKEN'). Users are only able to view their own recipes, and cannot see recipes added by other users. 
 
-Run the tests `npm test`
 
-## Deploying
+## Built With
 
-When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's master branch.
+### Server-Side
+* Node.js
+* Express
+* PostgreSQL
+
+### Client-Side Repo:
+
+- [List Assist](https://github.com/ryanjeske14/list-assist)

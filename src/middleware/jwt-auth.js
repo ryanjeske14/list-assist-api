@@ -1,6 +1,7 @@
 const AuthService = require("../auth/auth-service");
 
 function requireAuth(req, res, next) {
+  // get auth token from Authorization header
   const authToken = req.get("Authorization") || "";
 
   let bearerToken;
@@ -10,6 +11,7 @@ function requireAuth(req, res, next) {
     bearerToken = authToken.slice(7, authToken.length);
   }
 
+  // check if valid user, and if so, set req.user to user data retrieved from DB, otherwise reject request
   try {
     const payload = AuthService.verifyJwt(bearerToken);
 
