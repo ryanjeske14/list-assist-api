@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const UsersService = require("./users-service");
+const AuthService = require("./../auth/auth-service");
 
 const usersRouter = express.Router();
 const jsonBodyParser = express.json();
@@ -16,7 +17,7 @@ usersRouter.post("/", jsonBodyParser, (req, res, next) => {
 
   if (user_name.includes(" ")) {
     return res.status(400).json({
-      error: "User name cannot contain any spaces"
+      error: "Username cannot contain any spaces"
     });
   }
 
@@ -27,7 +28,7 @@ usersRouter.post("/", jsonBodyParser, (req, res, next) => {
   UsersService.hasUserWithUserName(req.app.get("db"), user_name)
     .then(hasUserWithUserName => {
       if (hasUserWithUserName)
-        return res.status(400).json({ error: `User name already taken` });
+        return res.status(400).json({ error: `Username already taken` });
 
       return UsersService.hashPassword(password).then(hashedPassword => {
         const newUser = {
@@ -38,10 +39,15 @@ usersRouter.post("/", jsonBodyParser, (req, res, next) => {
 
         return UsersService.insertUser(req.app.get("db"), newUser).then(
           user => {
+            const sub = user.user_name;
+            const payload = { user_id: user.id };
+
             res
               .status(201)
               .location(path.posix.join(req.originalUrl, `/${user.id}`))
-              .json(UsersService.serializeUser(user));
+              .send({
+                authToken: AuthService.createJwt(sub, payload)
+              });
           }
         );
       });

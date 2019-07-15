@@ -319,7 +319,12 @@ describe("Recipes Endpoints", function() {
           .then(res =>
             supertest(app)
               .get(`/api/recipes`)
-              .expect(expectedRecipes)
+              .then(res => {
+                expect(res.body.length).to.equal(2);
+                expect(res.body.find(recipe => recipe.id === 2)).to.equal(
+                  undefined
+                );
+              })
           );
       });
     });

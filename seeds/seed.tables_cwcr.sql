@@ -76,7 +76,8 @@ VALUES
 
 INSERT INTO users (user_name, password)
 VALUES
-    ('ryanjeske', '$2a$12$Rj705fl1vn.g5YnpeHhyeuv/3f/AuX/WCUsdgJo0x14lDIRvMd6iO');
+    ('ryanjeske', '$2a$12$Rj705fl1vn.g5YnpeHhyeuv/3f/AuX/WCUsdgJo0x14lDIRvMd6iO'),
+    ('demo', '$2a$12$JGEiRjoJFraFZBw0J5SfVeBNvXv.QNDLH2UNrhvrVX3MKhr2kemHK');
 
 INSERT INTO recipes (name, description, instructions, owner_id)
 VALUES
